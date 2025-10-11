@@ -1,14 +1,22 @@
-// import useFetch from "@/hooks/useFetch"
-// import { Navigate, useParams } from "react-router-dom";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
-import { Separator } from "@/components/ui/separator";
-import { Badge } from '@/components/ui/badge';
-import { Link } from 'react-router-dom';
-
-import { FloatingNav } from '@/components/ui/floating-navbar'
-import { Check, X, BrainCircuit } from "lucide-react";
-
 import { useEffect, useState } from 'react';
+// import useFetch from '@/hooks/useFetch'
+// import { Navigate, useParams } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import { Badge } from '@/components/ui/badge'
+import { 
+  Card, 
+  CardHeader, 
+  CardTitle, 
+  CardDescription, 
+  CardContent, 
+  CardFooter, 
+} from '@/components/ui/card'
+import { FloatingNav } from '@/components/ui/floating-navbar'
+import { FloatingReportNav } from '@/components/FloatingReportNav'
+import MetricBadge from '@/components/MetricBadge'
+import { Separator } from '@/components/ui/separator'
+import AIBadge from '@/components/AIBadge'
+import { Check, X } from 'lucide-react'
 
 const getSeverityColorAndKey = (score) => {
   if (75 <= score && score <= 100)
@@ -25,8 +33,8 @@ export default function Report() {
   // const { reportId } = useParams();
   // const {data} = useFetch(`http://localhost:3000/reports/${reportId}`);
 
-  // if (!localStorage.getItem("accessToken"))
-  //   return (<Navigate to="/accounts/log-in" replace={true} />);
+  // if (!localStorage.getItem('accessToken'))
+  //   return (<Navigate to='/accounts/log-in' replace={true} />);
 
   const report = {
     id: 3, 
@@ -47,15 +55,15 @@ export default function Report() {
       {impactName: 'Credential Theft' }, 
       {impactName: 'Financial loss' }, 
       {impactName: 'Privacy Loss' }, 
-    ],
+    ], 
     evidences: [
       {
-        id: 10,
-        evidenceKey: '3-10-2025-10-02T19:49:09.817Z.png',
+        id: 10, 
+        evidenceKey: '3-10-2025-10-02T19:49:09.817Z.png', 
         evidenceUrl: 'https://repnet-evidences-bucket.s3.us-east-2.amazonaws.com/3-10-2025-10-02T19%3A49%3A09.817Z.png', 
       }, 
-    ],
-    createdAt: new Date().toLocaleString("es-MX"), 
+    ], 
+    createdAt: new Date().toLocaleString('es-MX'), 
   }  
 
   const [s3File, setS3File] = useState(null);
@@ -81,46 +89,47 @@ export default function Report() {
 
   // const responses = report.evidences.map(({ evidenceUrl }) => );
 
-  // const { siteDomain, siteReputation, id, createdAt } = site;
-  // const cardConfig = { 
-  //   report: {}, 
-  //   site: {
-  //     icon: <Globe color='#FACC15' />,
-  //     siteDomain,
-  //     siteReputation, 
-  //     createdAt, 
-  //     id
-  //   }
-  // };
-
   const [color, key] = getSeverityColorAndKey(report.severity);
 
-  const navItems = [
+  const navActions = [
     {
-      name: "Validar",
-      link: "/safdsdfsdf",
-      icon: <Check />,
+      action: 'Validar', 
+      icon: Check, 
+      color: '#e11d48', 
     },
     {
-      name: "Rechazar",
-      link: "/abouasdfasdft",
-      icon: <X />,
+      action: 'Rechazar', 
+      icon: X, 
+      color: '#22c55e', 
     },
   ];
 
   return(
-    <Card className="w-full my-2">
-      <FloatingNav navItems={navItems} />
+    <Card className='h-fit w-full my-2'>
+      <FloatingReportNav navActions={ navActions } />
+
       <CardHeader className='flex items-center justify-between'>
         <CardTitle className='flex-col text-3xl truncate'>
           <span className='w-[80%]'>{report.reportTitle}</span>
+
           <CardDescription className='mt-2 truncate'>
             Reporte del sitio <Link to={`/admins/search/sites/${report.site.id}`} className='underline'> {report.site.siteDomain}</Link>, por  
             el usuario {report.user.username }.
           </CardDescription>
         </CardTitle>
-        <div className='flex flex-col items-center gap-y-5 font-bold text-3xl' >
-          <Badge className='rounded-full p-4 text-3xl font-bold' style={{ background: color, filter: `drop-shadow(0 0 7px ${color})`, aspectRatio: '1/1' }} >{report.severity}</Badge>
+
+        <div className='flex flex-col items-center gap-y-5 text-3xl font-bold'>
+          <Badge 
+            className='p-4 rounded-full text-3xl font-bold' 
+            style={{ 
+              background: color, 
+              filter: `drop-shadow(0 0 7px ${color})`, 
+              aspectRatio: '1/1' 
+            }} 
+          >
+            {report.severity}
+          </Badge>
+
           <span
             style={{ 
               background: color, 
@@ -134,7 +143,7 @@ export default function Report() {
         </div>
       </CardHeader>
 
-      <CardContent className='text-lg leading-tight flex flex-col gap-y-5'>
+      <CardContent className='flex flex-col gap-y-5 leading-tight'>
         <Separator />
 
         <CardTitle className='text-2xl'>URL</CardTitle>
@@ -146,19 +155,7 @@ export default function Report() {
         <div className='flex flex-wrap gap-2 pl-10'>
           {
             report.tags.map(({ tagName }) => {
-              return (
-                <div className="bg-slate-800 no-underline group relative shadow-2xl shadow-zinc-900 rounded-full p-px font-semibold leading-6 text-white inline-block">
-                  <span className="absolute inset-0 overflow-hidden rounded-full">
-                    <span className="absolute inset-0 rounded-full bg-[image:radial-gradient(75%_100%_at_50%_0%,#393BB2_0%,rgba(56,189,248,0)_75%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                  </span>
-                    <div className="relative flex space-x-2 items-center z-10 rounded-full bg-zinc-950 py-0.5 px-4 ring-1 ring-white/10 ">
-                      <span>
-                        {tagName}
-                      </span>
-                    </div>
-                    <span className="absolute -bottom-0 left-[1.125rem] h-px w-[calc(100%-2.25rem)] bg-gradient-to-r from-violet-400/0 via-violet-400/90 to-violet-400/0 transition-opacity duration-500 group-hover:opacity-40" />
-                </div>
-              );
+              return (<MetricBadge metricName={ tagName } />);
             })
           }
         </div>
@@ -176,19 +173,7 @@ export default function Report() {
         <div className='flex flex-wrap gap-2 pl-10'>
           {
             report.impacts.map(({ impactName }) => {
-              return (
-                <div className="bg-slate-800 no-underline group relative shadow-2xl shadow-zinc-900 rounded-full p-px font-semibold leading-6 text-white inline-block">
-                  <span className="absolute inset-0 overflow-hidden rounded-full">
-                    <span className="absolute inset-0 rounded-full bg-[image:radial-gradient(75%_100%_at_50%_0%,#393BB2_0%,rgba(56,189,248,0)_75%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                  </span>
-                    <div className="relative flex space-x-2 items-center z-10 rounded-full bg-zinc-950 py-0.5 px-4 ring-1 ring-white/10 ">
-                      <span>
-                        {impactName}
-                      </span>
-                    </div>
-                    <span className="absolute -bottom-0 left-[1.125rem] h-px w-[calc(100%-2.25rem)] bg-gradient-to-r from-violet-400/0 via-violet-400/90 to-violet-400/0 transition-opacity duration-500 group-hover:opacity-40" />
-                </div>
-              );
+              return (<MetricBadge metricName={ impactName } />);
             })
           }
         </div>
@@ -197,22 +182,13 @@ export default function Report() {
 
         <div className='text-2xl flex items-center gap-x-5'>
           <CardTitle>Evidencias</CardTitle>
-          <div className="relative inline-flex h-12 overflow-hidden rounded-full p-[1px]"> 
-            <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" /> 
-              <span className="inline-flex h-full w-full items-center justify-center rounded-full bg-slate-950 px-3 py-1 text-sm font-medium text-white backdrop-blur-3xl"> 
-                <BrainCircuit color='#9177c7'/> <span className='ml-2'>Asistido por IA </span>
-              </span> 
-          </div>
+          <AIBadge />
         </div>
         
-        <div className='w-full aspect-[4/3]'>
-          <img src={s3File} alt="evidence" className='mx-auto sm:w-[80%] sm:h-[60%] lg:w-[70%] lg:h-[%57] rounded-md' />
+        <div className='flex flex-col gap-y-2'>
+          <img src={s3File} alt='evidence' className='mx-auto sm:w-[65%] lg:w-[50%] rounded-md' />
         </div>
       </CardContent>
-
-      <CardFooter>
-        
-      </CardFooter>
     </Card>
   );
 }

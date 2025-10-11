@@ -1,21 +1,41 @@
 // import useFetch from "@/hooks/useFetch"
-import {Link, Navigate} from "react-router-dom";
-import {ClipboardPen, Search, User, Globe, Activity, Gamepad2} from "lucide-react";
 import {
-  Sidebar, SidebarHeader, SidebarContent, SidebarGroup, SidebarGroupLabel, 
-  SidebarGroupContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, 
-  SidebarMenuSub, SidebarMenuSubItem, SidebarFooter, SidebarSeparator
-} from "@/components/ui/sidebar";
+  Link, 
+  Navigate, 
+} from 'react-router-dom'
 import {
-  Collapsible, CollapsibleTrigger, CollapsibleContent
-} from "@/components/ui/collapsible"
-
-import SidebarCard from "@/components/SidebarCard";
-import LogoutAlert from "@/components/LogoutAlert"; 
+  Sidebar, 
+  SidebarHeader, 
+  SidebarContent, 
+  SidebarGroup, 
+  SidebarGroupLabel, 
+  SidebarGroupContent, 
+  SidebarMenu, 
+  SidebarMenuItem,
+  SidebarMenuButton, 
+  SidebarMenuSub, 
+  SidebarMenuSubItem, 
+  SidebarFooter, 
+  SidebarSeparator, 
+} from '@/components/ui/sidebar'
+import {
+  Collapsible, 
+  CollapsibleTrigger, 
+  CollapsibleContent, 
+} from '@/components/ui/collapsible'
+import {
+  ClipboardPen, 
+  Search, 
+  User, 
+  Globe, 
+} from 'lucide-react'
+import SidebarCard from '@/components/SidebarCard'
+import LogoutAlert from '@/components/LogoutAlert'
 
 const features = [
-  {title: "Partidas", url: "matches", icon: Activity}, 
-  {title: "Niveles", url: "levels", icon: Gamepad2}
+  { title: 'Reportes', url: 'reports', icon: ClipboardPen }, 
+  { title: 'Sitios', url: 'sites', icon: Globe }, 
+  { title: 'Usuarios', url: 'users', icon: User }, 
 ];
 
 export default function AdminSidebar() {
@@ -34,8 +54,8 @@ export default function AdminSidebar() {
       <Sidebar variant="floating">
         <SidebarHeader>
           <SidebarCard 
-            teacherName={data.name} 
-            teacherClass={data.ownedByClass}
+            teacherName={ data.name } 
+            teacherClass={ data.ownedByClass }
           />
         </SidebarHeader>
 
@@ -53,27 +73,17 @@ export default function AdminSidebar() {
                     </CollapsibleTrigger>
                     <CollapsibleContent>
                       <SidebarMenuSub>
-                        <SidebarMenuSubItem key="reports">
-                          <SidebarMenuButton asChild>
-                            <Link to="search/reports">
-                              <ClipboardPen /> Reportes
-                            </Link>
-                          </SidebarMenuButton>
-                        </SidebarMenuSubItem>
-                        <SidebarMenuSubItem key="sites">
-                          <SidebarMenuButton asChild>
-                            <Link to="search/sites">
-                              <Globe /> Sitios
-                            </Link>
-                          </SidebarMenuButton>
-                        </SidebarMenuSubItem>
-                        <SidebarMenuSubItem key="users">
-                          <SidebarMenuButton asChild>
-                            <Link to="search/users">
-                              <User /> Usuarios
-                            </Link>
-                          </SidebarMenuButton>
-                        </SidebarMenuSubItem>
+                        { 
+                          features.map(feature => (
+                            <SidebarMenuSubItem key={ feature.title }>
+                              <SidebarMenuButton asChild>
+                                <Link to={`search/${feature.url}`}>
+                                  <feature.icon /> { feature.title }
+                                </Link>
+                              </SidebarMenuButton>
+                            </SidebarMenuSubItem>
+                          )) 
+                        }
                       </SidebarMenuSub>
                     </CollapsibleContent>
                   </SidebarMenuItem>
@@ -81,7 +91,6 @@ export default function AdminSidebar() {
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
-
         </SidebarContent>
 
         <SidebarFooter>
@@ -90,9 +99,7 @@ export default function AdminSidebar() {
             <SidebarGroupContent>
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <LogoutAlert />
-                  </SidebarMenuButton>
+                  <LogoutAlert />
                 </SidebarMenuItem>
               </SidebarMenu>
             </SidebarGroupContent>

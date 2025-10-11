@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
 export default function SignInForm () {
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ export default function SignInForm () {
   const [error, setError] = useState(null);
 
   const handleChange = (e) => {
-    const {name, value} = e.target;
+    const { name, value } = e.target;
     setFormData((prevState) => ({
       ...prevState,
       [name]: value
@@ -30,7 +30,7 @@ export default function SignInForm () {
     e.preventDefault()
     setIsPending(true);
 
-    fetch('http://localhost:3000/aut/teachers/sign-in', {
+    fetch('http://localhost:3000/auth/teachers/sign-in', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({ formData })
@@ -54,42 +54,84 @@ export default function SignInForm () {
   };
 
   return (
-    <form onSubmit={handleSubmit} className='w-[75vw] lg:w-[50vw] py-15 px-10 rounded-lg'>
+    <form 
+      onSubmit={ handleSubmit } 
+      className='w-[75vw] lg:w-[50vw] py-15 px-10 rounded-lg'
+    >
 
-      <div className="flex flex-col items-baseline gap-y-5 pb-6">
-        <div className="w-[100%] flex items-center gap-x-2">
-          <Label htmlFor="name">Nombre:</Label>
-          <Input onChange={handleChange} name="name" id="name" type="text" required />
+      <div className='pb-6 flex flex-col items-baseline gap-y-5'>
+        <div className='w-[100%] flex items-center gap-x-2'>
+          <Label htmlFor='name'>Nombre:</Label>
+          <Input 
+            onChange={ handleChange } 
+            name='name' 
+            id='name' 
+            type='text' 
+            required 
+          />
         </div>
 
-        <div className="w-[100%] flex flex-row items-center gap-x-3">
-          <div className="w-[50%] items-stretch flex items-center">
-            <Label htmlFor="fathersLastName">Appellido Paterno:</Label>
-           <Input onChange={handleChange} name="fathersLastName" id="fathersLastName" type="text" required />
+        <div className='w-[100%] flex flex-row items-center gap-x-3'>
+          <div className='w-[50%] flex items-center items-stretch'>
+            <Label htmlFor='fathersLastName'>Appellido Paterno:</Label>
+           <Input 
+            onChange={ handleChange } 
+            name='fathersLastName' i
+            d='fathersLastName' 
+            type='text' 
+            required 
+          />
           </div>
-          <div className="w-[50%] items-stretch flex items-center">
-            <Label htmlFor="mothersLastName">Appellido Materno:</Label>
-            <Input onChange={handleChange} name="mothersLastName" id="mothersLastName" type="text" required />
+
+          <div className='w-[50%] flex items-center items-stretch'>
+            <Label htmlFor='mothersLastName'>Appellido Materno:</Label>
+            <Input 
+              onChange={ handleChange } 
+              name='mothersLastName' 
+              id='mothersLastName' 
+              type='text' 
+              required 
+            />
           </div>
         </div>
       </div>
 
-      <div className="mb-2 space-y-2">
-        <Label htmlFor="username">Username:</Label>
-        <Input onChange={handleChange} name="username" id="username" type="text" required />
+      <div className='mb-2 space-y-2'>
+        <Label htmlFor='username'>Username:</Label>
+        <Input 
+          onChange={ handleChange } 
+          name='username' 
+          id='username' 
+          type='text' 
+          required 
+        />
       </div>
 
-      <div className="mb-2 space-y-2">
-        <Label htmlFor="email">Email:</Label>
-        <Input onChange={handleChange} name="email" id="email" type="email" required />
+      <div className='mb-2 space-y-2'>
+        <Label htmlFor='email'>Email:</Label>
+        <Input 
+          onChange={ handleChange } 
+          name='email' 
+          id='email' 
+          type='email' 
+          required 
+        />
       </div>
 
-      <div className="mb-2 space-y-2">
-        <Label htmlFor="hashedPassword">Contraseña:</Label>
-        <Input onChange={handleChange} name="hashedPassword" id="hashedPassword" type="password" required />
+      <div className='mb-2 space-y-2'>
+        <Label htmlFor='hashedPassword'>Contraseña:</Label>
+        <Input 
+          onChange={ handleChange } 
+          name='hashedPassword' 
+          id='hashedPassword' 
+          type='password' 
+          required 
+        />
       </div>
 
-      <Button className="mt-4" type="submit">Registrarse</Button>
+      <Button className='mt-4 bg-[#FACC15]' type='submit'>
+        Registrarse
+      </Button>
     </form>
   );
 }

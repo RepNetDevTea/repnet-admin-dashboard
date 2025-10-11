@@ -27,10 +27,14 @@ const dots = [
 ];
 
 export default function NotFoundPage() {
+  const commonStyle = 'bg-transparent text-[#FACC15] font-bold text-center ';
+
   return (
-    <div className='min-h-[100vh] bg-black w-full'>
-      <h1 className="text-[#FACC15] text-5xl font-bold bg-transparent text-center">404</h1>
-      <p className="text-[#FACC15] text-md font-bold bg-transparent text-center">No encontramos lo que buscabas</p>
+    <div className='min-h-[100vh] w-full bg-black'>
+      <h1 className={commonStyle+'text-4xl'}>404</h1>
+      <p className={ commonStyle } >
+        No encontramos lo que buscabas
+      </p>
       <WorldMap dots={dots} lineColor={'#FACC15'} />
     </div>
   );

@@ -1,9 +1,14 @@
-import {Separator} from "@/components/ui/separator";
-import {
-  Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter
-} from "@/components/ui/card";
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import {
+  Card, 
+  CardHeader, 
+  CardTitle, 
+  CardDescription, 
+  CardContent, 
+  CardFooter, 
+} from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 import { Link } from 'react-router-dom'
 
 const getScoreColor = (score) => {
@@ -18,15 +23,6 @@ const getScoreColor = (score) => {
 }
 
 export default function PageCard({ cardConfig }) {
-  // const { 
-  //   siteDomain,  
-  //   siteReputation, id, createdAt 
-  // } = site;
-  // const date = new Date(createdAt).toLocaleDateString("sp-MX", { 
-  //   year: "numeric", 
-  //   month: "short", 
-  //   day: "numeric" 
-  // });
   const site = cardConfig?.site;
   const report = cardConfig?.report;
   const icon = site?.icon ?? report?.icon;
@@ -37,17 +33,20 @@ export default function PageCard({ cardConfig }) {
   const buttonContent = site?.buttonContent ?? report?.buttonContent;
 
   return (
-    <Card className="mb-2">
+    <Card className='mb-2'>
       <CardHeader>
-        <CardTitle className="text-xl flex items-center justify-between py-4.5 pr-4 overflow-hidden">
-          <div className="flex items-center overflow-hidden">
-          {icon}
-          <span className='px-2 pr-10 leading-tight truncate'>
-            {domainOrTitle} 
-          </span>
+        <CardTitle 
+          className='flex items-center justify-between py-4.5 pr-4 overflow-hidden text-xl'
+        >
+          <div className='flex items-center overflow-hidden'>
+            {icon}
+            <span className='px-2 pr-10 leading-tight truncate'>
+              {domainOrTitle} 
+            </span>
           </div>
+
           <Badge 
-            className='rounded-full p-2 mr-1 font-bold' 
+            className='mr-1 p-2 rounded-full font-bold' 
             style={{ 
               backgroundColor: getScoreColor(reputationOrSeverity),
               filter: `drop-shadow(0 0 4px ${getScoreColor(reputationOrSeverity)}`,
@@ -56,21 +55,22 @@ export default function PageCard({ cardConfig }) {
             {reputationOrSeverity}
           </Badge>
         </CardTitle>
+
         <Separator />
-        <CardDescription className="leading-none">
+
+        <CardDescription className='leading-none'>
           Se registró el {createdAt}
         </CardDescription>
       </CardHeader>
+
       { buttonContent && 
-      <>
         <CardFooter>
-          <Button>
+          <Button variant='secondary'>
             <Link to={`${id}`}>
               {buttonContent}
             </Link>
           </Button>
         </CardFooter>
-      </>
       }
     </Card>
   );

@@ -1,5 +1,8 @@
 import {
-  RouterProvider, createBrowserRouter, createRoutesFromElements, Route
+  RouterProvider, 
+  createBrowserRouter, 
+  createRoutesFromElements, 
+  Route, 
 } from 'react-router-dom'
 import LandingPage from './pages/LandingPage'
 import SignIn from '@/pages/accounts/SignIn'
@@ -13,9 +16,9 @@ import Report from './pages/admins/reports/Report'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/">
+    <Route path='/'>
       <Route index element={ <LandingPage /> } />
-      <Route path="accounts">
+      <Route path='accounts'>
         <Route path="sign-in" element={ <SignIn /> } />
         <Route path='log-in' element={ <LogIn /> } />
       </Route>
@@ -27,7 +30,7 @@ const router = createBrowserRouter(
           <Route path='reports/:reporId'element={<Report />} />
         </Route>
       </Route>
-      <Route path="*" element={ <NotFoundPage /> } />
+      <Route path='*' element={ <NotFoundPage /> } />
     </Route>
   )
 );

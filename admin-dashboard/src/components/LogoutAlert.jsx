@@ -1,29 +1,35 @@
-import {useNavigate} from "react-router-dom";
-import {LogOut} from "lucide-react";
-import {Button} from "@/components/ui/button";
+import { useNavigate } from 'react-router-dom'
 import {
-  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
-  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, 
-  AlertDialogTitle, AlertDialogTrigger
-} from "@/components/ui/alert-dialog";
+  AlertDialog, 
+  AlertDialogAction, 
+  AlertDialogCancel, 
+  AlertDialogContent, 
+  AlertDialogDescription, 
+  AlertDialogFooter, 
+  AlertDialogHeader, 
+  AlertDialogTitle, 
+  AlertDialogTrigger, 
+} from '@/components/ui/alert-dialog'
+import { Button } from '@/components/ui/button'
+import { LogOut } from 'lucide-react'
 
 export default function LogoutAlert() {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    fetch("http://localhost:3000/accounts/teachers/log-out", {
-      method: "POST",
+    fetch('http://localhost:3000/auth/log-out', {
+      method: 'POST',
       headers: {
-        "ContentType": "application/json",
-        "Authorization": localStorage.getItem("jwt")
+        'ContentType': 'application/json',
+        'Authorization': localStorage.getItem('accessToken')
       }
     })
     .then(res => {
       if (!res.ok)
-        throw Error("Couldn't log out");
+        throw Error('Could not log out');
 
-      localStorage.removeItem("jwt");
-      return navigate("/");
+      localStorage.removeItem('accessToken');
+      return navigate('/');
     })
     .catch(error => console.log(error));
   };
@@ -31,7 +37,7 @@ export default function LogoutAlert() {
   return (
     <AlertDialog>
       <AlertDialogTrigger>
-        <Button variant="ghost">
+        <Button variant='ghost'>
           <LogOut /> Cerrar sesión
         </Button>
       </AlertDialogTrigger>
@@ -39,6 +45,7 @@ export default function LogoutAlert() {
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
+
           <AlertDialogDescription>
             Estás a punto de cerrar sesión en este dispositivo.
           </AlertDialogDescription>
@@ -46,9 +53,8 @@ export default function LogoutAlert() {
 
         <AlertDialogFooter>
           <AlertDialogCancel>Cancelar</AlertDialogCancel>
-          <AlertDialogAction 
-            onClick={handleClick}
-          >
+
+          <AlertDialogAction onClick={ handleClick }>
             Continuar
           </AlertDialogAction>
         </AlertDialogFooter>
