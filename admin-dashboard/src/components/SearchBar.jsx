@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Search } from 'lucide-react'
 
-export default function SearchBar({ placeholder, handleSubmit, handleChange }) {
+export default function SearchBar({ placeholder, handleChange, handleSubmit }) {
   return (
     <form className='h-14 mb-7 flex items-center gap-x-2' onSubmit={handleSubmit}>
       <Badge className='p-3 rounded-full bg-[#FACC15] drop-shadow-[0_0_7px_#FACC15]'>

@@ -18,10 +18,10 @@ export default function LogIn() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
-    password: ''
+    password: '', 
   });
-  // const [isPending, setIsPending] = useState(false);
-  // const [isError, setError] = useState(null);
+  const [isPending, setIsPending] = useState(false);
+  const [isError, setError] = useState(null);
 
   const handleChange = (e) => {
     const {name, value} = e.target;
@@ -33,12 +33,12 @@ export default function LogIn() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // setIsPending(true);
+    setIsPending(true);
 
-    fetch('http://localhost:3000/accounts/teachers/log-in', {
+    fetch('http://localhost:3000/auth/login', {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(formData)
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData), 
     })
     .then(res => {
       if (!res.ok) {
@@ -47,12 +47,16 @@ export default function LogIn() {
       }
       return res.json();
     })
-    .then(({newToken}) => {
-      // setIsPending(false);
-      localStorage.setItem('jwt', `Bearer ${newToken}`);
-      navigate('/teachers/matches');
+    .then(({ accessToken, refreshToken }) => {
+      setIsPending(false)
+      setError(null);
+      localStorage.setItem('accessToken', `Bearer ${accessToken}`);
+      localStorage.setItem('refreshToken', `Bearer ${refreshToken}`);
+      navigate('/admins');
     })
     .catch(error => {
+      setIsPending(false);
+      setError(error.message);
       console.log(error);
     });
   };

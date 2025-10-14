@@ -1,4 +1,4 @@
-// import useFetch from "@/hooks/useFetch"
+import useFetch from "@/hooks/useFetch"
 import {
   Link, 
   Navigate, 
@@ -38,24 +38,14 @@ const features = [
   { title: 'Usuarios', url: 'users', icon: User }, 
 ];
 
-export default function AdminSidebar() {
-  // const {data, error} = useFetch("http://localhost:3000/teachers/details");
-
-  const data = {
-    name: 'roberto',
-    ownedByClass: '2a',
-  };
-
-  // if (error)
-  //   return (<Navigate to="/" replace={true} />);
+export default function AdminSidebar({ userData }) {
 
   return (
-    data && (
+    userData && (
       <Sidebar variant="floating">
         <SidebarHeader>
           <SidebarCard 
-            teacherName={ data.name } 
-            teacherClass={ data.ownedByClass }
+            username={ userData.username } 
           />
         </SidebarHeader>
 

@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label'
 
 export default function SignInForm () {
   const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: '',
     fathersLastName: '',
@@ -15,6 +16,7 @@ export default function SignInForm () {
     hashedPassword: '',
     userRole: 'admin'
   });
+
   const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState(null);
 
@@ -30,21 +32,21 @@ export default function SignInForm () {
     e.preventDefault()
     setIsPending(true);
 
-    fetch('http://localhost:3000/auth/teachers/sign-in', {
+    fetch('http://localhost:3000/users', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ formData })
+      body: JSON.stringify(formData)
     })
     .then((res) => {
-      console.log(res);
+      // console.log(res);
       return res.json();
     })
-    .then(({accessToken, refreshToken}) => {
+    .then(({ accessToken, refreshToken }) => {
       localStorage.setItem('accessToken', `Bearer ${accessToken}`);
-      localStorage.setItem('refreshToken', `Bearer ${refreshToken}`)
+      localStorage.setItem('refreshToken', `Bearer ${refreshToken}`);
       setIsPending(false);
       setError(null);
-      navigate('/admin/dashboard');
+      navigate('/admins');
     })
     .catch((error) => {
       setIsPending(false);
@@ -74,13 +76,13 @@ export default function SignInForm () {
         <div className='w-[100%] flex flex-row items-center gap-x-3'>
           <div className='w-[50%] flex items-center items-stretch'>
             <Label htmlFor='fathersLastName'>Appellido Paterno:</Label>
-           <Input 
-            onChange={ handleChange } 
-            name='fathersLastName' i
-            d='fathersLastName' 
-            type='text' 
-            required 
-          />
+            <Input 
+              onChange={ handleChange } 
+              name='fathersLastName'
+              id='fathersLastName' 
+              type='text' 
+              required 
+            />
           </div>
 
           <div className='w-[50%] flex items-center items-stretch'>

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import useFetch from '@/hooks/useFetch'
 import { Navigate } from 'react-router-dom'
 import PageCard from '@/components/PageCard'
 import PaginationComponent from '@/components/PaginationComponent'
@@ -6,18 +7,27 @@ import SearchBar from '@/components/SearchBar'
 import { Globe } from 'lucide-react'
 
 export default function SitesPage() {
-  const [studentId, setStudentId] = useState('');
-  const [data, setData] = useState(null);
-  const [isPending, setIsPending] = useState(false);
-  const [error, setError] = useState(null);
+  if (!localStorage.getItem('accessToken'))
+    return (<Navigate to="/accounts/log-in" replace={true} />);
 
-  const handleChange = (e) => {setStudentId(e.target.value)};
+  const { 
+    data: sitesData, 
+    isPending: isSitesPending, 
+    error: sitesError, 
+  } = useFetch('http://localhost:3000/sites')
+
+  const [siteDomain, setSiteDomain] = useState('');
+  const handleChange = (e) => {setSiteDomain(e.target.value)};
+
+  const [siteData, setSiteData] = useState(null);
+  const [isSitePending, setIsSitePending] = useState(false);
+  const [siteError, setSiteError] = useState(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setIsPending(true);
+    setIsSitePending(true);
 
-    fetch('http://localhost:3000/sites', {
+    fetch(`http://localhost:3000/sites/?siteDomain=${siteDomain}`, {
       method: 'GET',
       headers: {'Authorization': localStorage.getItem('accessToken')}
     })
@@ -27,40 +37,19 @@ export default function SitesPage() {
       return res.json()
     })
     .then(data => {
-      setData(data);
-      setIsPending(false);
-      setError(null);
+      setSiteData(data);
+      setIsSitePending(false);
+      setSiteError(null);
     })
     .catch(error => {
-      setIsPending(false);
-      setError(error.message);
-      console.log(error);
+      setIsSitePending(false);
+      setSiteError(error.message);
+      console.log(error.message);
     });
   }
-
-  // if (!localStorage.getItem('accessToken'))
-  //   return (<Navigate to="/accounts/log-in" replace={true} />);
-
-  const createCardConfig = (reputation) => { 
-    const cardConfig = {
-      report: {},
-      site: {
-        icon: <Globe color='#FACC15' />,
-        siteDomain: 'AWS.COM',
-        siteReputation: reputation,
-        createdAt: new Date().toLocaleString('es-MX'),
-        id: 3,
-        buttonContent: 'Análisis', 
-      }
-    }
-    return cardConfig;
-  };
-
-  const cardConfig1 = createCardConfig(90)
-  const cardConfig2 = createCardConfig(71);
-  const cardConfig3 = createCardConfig(49);
-  const cardConfig4 = createCardConfig(20);
-  const cardConfig5 = createCardConfig(100);
+  
+  const icon = <Globe color='#FACC15' />;
+  const buttonContent = 'Analizar';
 
   return (
     <div className='w-full flex-col justify-start items-start'>
@@ -76,20 +65,22 @@ export default function SitesPage() {
         handleChange={ handleChange } 
       />
 
-      {true && 
-        <div className='grid sm:grid-cols-1 md:grid-cols-2 gap-5'>
-          <PageCard cardConfig={ cardConfig1 } />
-          <PageCard cardConfig={ cardConfig2 } />
-          <PageCard cardConfig={ cardConfig3 } />
-          <PageCard cardConfig={ cardConfig4 } />
-          <PageCard cardConfig={ cardConfig5 } />
-          <PageCard cardConfig={ cardConfig1 } />
-          <PageCard cardConfig={ cardConfig2 } />
-          <PageCard cardConfig={ cardConfig3 } />
-          <PageCard cardConfig={ cardConfig4 } />
-          <PageCard cardConfig={ cardConfig5 } />
-        </div>
-      }
+      <div className='grid sm:grid-cols-1 md:grid-cols-2 gap-5'>
+        { 
+          siteData ? (
+            <PageCard 
+              cardConfig={{ report: {}, site: { ...siteData, icon, buttonContent } }} 
+            />
+          ) : (
+            sitesData?.map((siteData) => (
+              <PageCard 
+                cardConfig={{ report: {}, site: { ...siteData, icon, buttonContent } }} 
+              />
+            ))
+          )
+        }
+      </div>      
+
       <PaginationComponent />
     </div>
   ); 

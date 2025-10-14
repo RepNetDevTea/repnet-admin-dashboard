@@ -27,7 +27,7 @@ const router = createBrowserRouter(
           <Route path='sites' element={<SitesPage />} />
           <Route path='sites/:siteId' element={<Site />} />
           <Route path='reports' element = {<ReportsPage />} />
-          <Route path='reports/:reporId'element={<Report />} />
+          <Route path='reports/:reportId'element={<Report />} />
         </Route>
       </Route>
       <Route path='*' element={ <NotFoundPage /> } />

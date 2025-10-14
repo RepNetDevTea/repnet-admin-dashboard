@@ -35,11 +35,11 @@ const ChartRadarDots = ({ data }) => {
     >
       <RadarChart data={ data }>
         <ChartTooltip cursor={ false } content={<ChartTooltipContent />} />
-        <PolarAngleAxis dataKey={ dataKey } />
+        <PolarAngleAxis dataKey={ label } />
         <PolarGrid />
 
         <Radar
-          dataKey={ label }
+          dataKey={ dataKey }
           fill={'var(--color-'+label+')'}
           fillOpacity={ 0.6 }
           dot={{ r: 4, fillOpacity: 1, }}
@@ -49,24 +49,35 @@ const ChartRadarDots = ({ data }) => {
   );
 }
 
-export default function SiteStats({ metrics }) {
+export default function SiteStats({ metric }) {
+
   return (
     <Card>
       <CardHeader className='items-center'>
         <CardTitle>
-          Radar Charts - {metrics[0].type}s y {metrics[1].type}s
+          Radar Charts - {metric.type}s
         </CardTitle>
 
         <CardDescription>
-          Desplegando el total de {metrics[0].type.toLowerCase()}s y {metrics[1].type.toLowerCase()}s a lo largo del tiempo
+          Desplegando el total de {metric.type.toLowerCase()}s a lo largo del tiempo
         </CardDescription>
       </CardHeader>
 
-      <CardContent className='mt-6 sm:flex-row md:flex'>
-        {
-          metrics.map((metric) => {
-            return <ChartRadarDots data={ metric.content } />
-          })
+      <CardContent className='mt-6 sm:flex-row md:flex items-center justify-center'>
+        { metric.content.length ? ( 
+            <ChartRadarDots data={ metric.content } />
+          ) : (
+            <div 
+              className='p-10 text-lg text-center text-transparent' 
+              style={{
+                background: '#e11d48',
+                backgroundClip: 'text',
+                filter: 'drop-shadow(0 0 5px #e11d48)', 
+              }}
+            > 
+              Sin análisis de {metric.type.toLowerCase()}s que desplegar
+            </div>
+          )
         }
       </CardContent>
     </Card>

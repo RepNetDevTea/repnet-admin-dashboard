@@ -7,16 +7,16 @@ const useFetch = (url) => {
 
   useEffect(() => {
     const abortController = new AbortController();
-    const jwt = localStorage.getItem("jwt");
+    const accessToken = localStorage.getItem('accessToken');
     
     fetch(url, {
-      method: "GET", 
-      headers: {"Authorization": `${jwt}`}, 
+      method: 'GET', 
+      headers: {'Authorization': `${accessToken}`}, 
       signal: abortController.signal
     })
     .then(res => {
       if(!res.ok)
-        throw new Error("Couldn't fetch the desired data");
+        throw new Error('Could not fetch the desired data');
       return res.json();
     })
     .then(data => {
@@ -25,8 +25,8 @@ const useFetch = (url) => {
       setError(null);
     })
     .catch(err => {
-      if (err.name == "AbortError")
-        console.log("fetch aborted");
+      if (err.name == 'AbortError')
+        console.log('fetch aborted');
       else {
         setIsPending(false);
         setError(err.message);

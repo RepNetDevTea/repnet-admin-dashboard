@@ -9,11 +9,11 @@ import {
 } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 
-export default function SidebarCard({ teacherName }) {
+export default function SidebarCard({ username }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className='truncate'>¡Bienvenido {teacherName}!</CardTitle>
+        <CardTitle className='truncate'>¡Bienvenido {username}!</CardTitle>
 
         <Separator />
 

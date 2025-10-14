@@ -9,6 +9,7 @@ import {
   CardFooter, 
 } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { AspectRatio } from '@chakra-ui/react';
 import { Link } from 'react-router-dom'
 
 const getScoreColor = (score) => {
@@ -48,6 +49,7 @@ export default function PageCard({ cardConfig }) {
           <Badge 
             className='mr-1 p-2 rounded-full font-bold' 
             style={{ 
+              aspectRatio: '1/1', 
               backgroundColor: getScoreColor(reputationOrSeverity),
               filter: `drop-shadow(0 0 4px ${getScoreColor(reputationOrSeverity)}`,
             }}

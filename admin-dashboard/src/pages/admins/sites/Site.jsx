@@ -1,6 +1,5 @@
-// import useFetch from '@/hooks/useFetch'
-// import { Navigate, useParams } from 'react-router-dom';
-import { Badge } from '@/components/ui/badge'
+import useFetch from '@/hooks/useFetch'
+import { Navigate, useParams } from 'react-router-dom'
 import { 
   Card, 
   CardHeader, 
@@ -15,6 +14,32 @@ import { Separator } from '@/components/ui/separator'
 import SiteStats from '@/components/SiteStats'
 import { Globe } from 'lucide-react'
 
+const getMetricNamesAndFreqs = (metric, reports) => {
+  const metricNamesAndFreqs = new Map();
+
+  reports.forEach((report) => {
+    report[`${metric}s`].forEach((metricObject) => {
+      const metricName = metricObject[metric][`${metric}Name`];
+      const prevFreqs = metricNamesAndFreqs.get(metricName) ?? 0;
+      metricNamesAndFreqs.set(metricName, prevFreqs + 1);
+    })
+  })
+
+  return metricNamesAndFreqs;
+};
+
+const getMetricData = (map, dataKey) => {
+  const content = [];
+  map.forEach((frequency, metricName) => {
+    content.push({ 
+      frecuencia: frequency, 
+      [dataKey]: metricName 
+    });
+  });
+
+  return content;
+}
+
 const getSeverityColorAndKey = (score) => {
   if (75 <= score && score <= 100)
     return ['#e11d48', 'CRÍTICO'];
@@ -27,36 +52,35 @@ const getSeverityColorAndKey = (score) => {
 }
 
 export default function Site() {
-  // const { siteId } = useParams();
-  // const {data} = useFetch(`http://localhost:3000/sites/${siteId}`);
+  if (!localStorage.getItem('accessToken'))
+    return (<Navigate to='/accounts/log-in' replace={true} />);
 
-  // if (!localStorage.getItem('accessToken'))
-  //   return (<Navigate to='/accounts/log-in' replace={true} />);
-  const site = {
-    siteDomain: 'AWS.COM', 
-    siteReputation: 90, 
-    id: 3, 
-    impacts: {
-      type: 'Impacto', 
-      content: [
-        {impacto: 'Credential Theft', instancias: 135 }, 
-        {impacto: 'Financial loss', instancias: 200 }, 
-        {impacto: 'Privacy Loss', instancias: 230 }, 
-      ], 
-    }, 
-    tags: {
-      type: 'Categoría', 
-      content: [
-        { categoría: 'Phishing', instancias: 111 }, 
-        { categoría: 'Malware', instancias: 198 }, 
-        { categoría: 'Privacy Violation', instancias: 384 }, 
-        { categoría: 'Spam', instancias: 1000 }, 
-      ], 
-    }, 
-    createdAt: new Date().toLocaleString('es-MX'), 
-  }
+  const { siteId } = useParams();
+  const { data, isPending, error } = useFetch(`http://localhost:3000/sites/${siteId}`);
 
-  const { siteDomain, siteReputation, id, createdAt } = site;
+  if (isPending) return (<div>Pérame wey...</div>);
+
+  const { updatedAt, reports, ...remainingData } = data;
+  const { id, siteDomain, siteReputation, createdAt } = remainingData;
+
+  const tagNamesAndFreqs = getMetricNamesAndFreqs('tag', reports);
+  const tagNames = [];
+  tagNamesAndFreqs.forEach((frequency, tagName) => tagNames.push(tagName));
+
+  const impactNamesAndFreqs = getMetricNamesAndFreqs('impact', reports);
+  const impactNames = [];
+  impactNamesAndFreqs.forEach((frequency, impactName) => impactNames.push(impactName));
+
+  const tagsChartData = { 
+    type: 'Categoría', 
+    content: getMetricData(tagNamesAndFreqs, 'categoría'), 
+  };
+
+  const impactsChartData = {
+    type: 'Impacto',
+    content: getMetricData(impactNamesAndFreqs, 'impacto'), 
+  };
+
   const cardConfig = { 
     report: {}, 
     site: {
@@ -68,55 +92,81 @@ export default function Site() {
     }
   };
 
-  const [color, key] = getSeverityColorAndKey(site.siteReputation);
+  const [color, key] = getSeverityColorAndKey(siteReputation);
 
   return (
     <div className='w-full my-2'>
-      {/* {data && <LevelStats levels={data.levels} />} */}
-      <Card>
-        <CardHeader>
-          <div 
-            className='text-7xl text-center text-transparent font-bold'
-            style={{ 
-              background: color, 
-              filter: `drop-shadow(0 0 10px ${color})`, 
-              backgroundClip: 'text'
-            }}
-          >
-            - {key} -
-          </div>
+      {data &&
+        <Card>
+          <CardHeader>
+            <div 
+              className='text-7xl text-center text-transparent font-bold'
+              style={{ 
+                background: color, 
+                filter: `drop-shadow(0 0 10px ${color})`, 
+                backgroundClip: 'text'
+              }}
+            >
+              - {key} -
+            </div>
 
-          <Separator className='my-3' />
+            <Separator className='my-3' />
 
-          <PageCard cardConfig={ cardConfig } />
+            <PageCard cardConfig={ cardConfig } />
           
-          <CardDescription>
-            <CardTitle className='ml-2 mb-3 text-xl'>Impactos</CardTitle>
+            <CardDescription>
+              <CardTitle className='ml-2 mb-3 text-xl'>Categorías</CardTitle>
 
-            <div className='mb-3 pl-10 flex flex-wrap gap-2'>
-              {
-                site.impacts.content.map(({ impacto }) => {
-                  return (<MetricBadge className='text-white' metricName={ impacto } /> );
-                })
-              }
-            </div>
+              <div className='mb-3 pl-10 flex flex-wrap gap-2'>
+                { tagNames.length ? (
+                    tagNames.map((tagName) => {
+                      return (<MetricBadge className='text-white' metricName={ tagName } /> );
+                    })
+                  ) : (
+                    <div 
+                      className='text-lg text-transparent' 
+                      style={{
+                      background: '#e11d48',
+                      backgroundClip: 'text',
+                      filter: 'drop-shadow(0 0 5px #e11d48)', 
+                      }}
+                    > 
+                      Sin categoría(s) que desplegar
+                    </div>
+                  )  
+                }
+              </div>
 
-            <CardTitle className='ml-2 mb-3 text-xl'>Categorías</CardTitle>
+              <CardTitle className='ml-2 mb-3 text-xl'>Impactos</CardTitle>
 
-            <div className='mb-3 pl-10 flex flex-wrap gap-2'>
-              {
-                site.tags.content.map(({ categoría }) => {
-                  return (<MetricBadge className='text-white' metricName={ categoría } />);
-                })
-              }
-            </div>
-          </CardDescription>
-        </CardHeader>
+              <div className='mb-3 pl-10 flex flex-wrap gap-2'>
+                { impactNames.length ? (
+                    impactNames.map((impactName) => {
+                      return (<MetricBadge className='text-white' metricName={ impactName } />);
+                    })
+                  ) : (
+                    <div 
+                      className='text-lg text-transparent' 
+                      style={{
+                      background: '#e11d48',
+                      backgroundClip: 'text',
+                      filter: 'drop-shadow(0 0 5px #e11d48)', 
+                      }}
+                    > 
+                      Sin impacto(s) que desplegar
+                    </div>
+                  )  
+                }
+              </div>
+            </CardDescription>
+          </CardHeader>
 
-        <CardContent>
-          <SiteStats metrics={[site.impacts, site.tags]} />
-        </CardContent>
-      </Card>
+          <CardContent className = 'flex flex-col gap-y-3'>
+            <SiteStats metric={tagsChartData} />
+            <SiteStats metric={impactsChartData} />
+          </CardContent>
+        </Card>
+      }
     </div>
   );
 }

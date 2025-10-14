@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-// import useFetch from '@/hooks/useFetch'
-// import { Navigate, useParams } from 'react-router-dom'
+import useFetch from '@/hooks/useFetch'
+import { Navigate, useParams } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import { Badge } from '@/components/ui/badge'
 import { 
@@ -11,7 +11,6 @@ import {
   CardContent, 
   CardFooter, 
 } from '@/components/ui/card'
-import { FloatingNav } from '@/components/ui/floating-navbar'
 import { FloatingReportNav } from '@/components/FloatingReportNav'
 import MetricBadge from '@/components/MetricBadge'
 import { Separator } from '@/components/ui/separator'
@@ -30,77 +29,41 @@ const getSeverityColorAndKey = (score) => {
 }
 
 export default function Report() {
-  // const { reportId } = useParams();
-  // const {data} = useFetch(`http://localhost:3000/reports/${reportId}`);
+  if (!localStorage.getItem('accessToken'))
+    return (<Navigate to='/accounts/log-in' replace={true} />);
 
-  // if (!localStorage.getItem('accessToken'))
-  //   return (<Navigate to='/accounts/log-in' replace={true} />);
+  const { reportId } = useParams();
+  const { data, isPending, error } = useFetch(`http://localhost:3000/reports/${reportId}`);
 
-  const report = {
-    id: 3, 
-    reportTitle: 'Fake Banking Login Page Stealing Credentials',
-    severity: 10,
-    user: { username: 'Jero' },
-    site: { id: 3, siteDomain: 'secure-banco-mx-login.com' }, 
-    reportUrl: 'https://secure-banco-mx-login.com/verify', 
-    reportStatus: 'pending', 
-    tags: [
-      { tagName: 'Phishing' }, 
-      { tagName: 'Malware' }, 
-      { tagName: 'Privacy Violation' }, 
-      { tagName: 'Spam' }
-    ], 
-    reportDescription: 'I received an email that looked identical to my bank’s official communications. The link redirected me to a site that mimicked the login page perfectly. After entering my details, the site displayed an error and asked me to retry. Later, I noticed suspicious activity on my bank account.', 
-    impacts: [
-      {impactName: 'Credential Theft' }, 
-      {impactName: 'Financial loss' }, 
-      {impactName: 'Privacy Loss' }, 
-    ], 
-    evidences: [
-      {
-        id: 10, 
-        evidenceKey: '3-10-2025-10-02T19:49:09.817Z.png', 
-        evidenceUrl: 'https://repnet-evidences-bucket.s3.us-east-2.amazonaws.com/3-10-2025-10-02T19%3A49%3A09.817Z.png', 
-      }, 
-    ], 
-    createdAt: new Date().toLocaleString('es-MX'), 
-  }  
+  if (isPending) return(<div>Pérame wey...{reportId}</div>);
 
-  const [s3File, setS3File] = useState(null);
-  const [isPending, setIsPending] = useState(true);
-  const [error, setError] = useState(null);
+  const { 
+    id, 
+    reportTitle, 
+    severity, 
+    user, 
+    site, 
+    reportUrl, 
+    reportDescription, 
+    tags, 
+    impacts, 
+    evidences,  
+  } = data;
 
-  useEffect(() => {
-    fetch(report.evidences[0].evidenceUrl)
-    .then((res) => {
-      return res.blob();
-    })
-    .then((data) => {
-      const file = URL.createObjectURL(data);
-      setS3File(file);
-      setIsPending(false);
-      setError(null);
-    })
-    .catch((error) => {
-      setError(error.message);
-      setIsPending(false);
-    })
-  }, []);
-
-  // const responses = report.evidences.map(({ evidenceUrl }) => );
-
-  const [color, key] = getSeverityColorAndKey(report.severity);
+  const [color, key] = getSeverityColorAndKey(severity);
 
   const navActions = [
     {
-      action: 'Validar', 
+      action: 'Aprobar', 
       icon: Check, 
-      color: '#e11d48', 
+      color: '#22c55e', 
+      toStatus: 'approved'
     },
     {
       action: 'Rechazar', 
       icon: X, 
-      color: '#22c55e', 
+      color: '#e11d48', 
+      toStatus: 'rejected'
     },
   ];
 
@@ -110,11 +73,11 @@ export default function Report() {
 
       <CardHeader className='flex items-center justify-between'>
         <CardTitle className='flex-col text-3xl truncate'>
-          <span className='w-[80%]'>{report.reportTitle}</span>
+          <span className='w-[80%]'>{id}º {reportTitle}</span>
 
           <CardDescription className='mt-2 truncate'>
-            Reporte del sitio <Link to={`/admins/search/sites/${report.site.id}`} className='underline'> {report.site.siteDomain}</Link>, por  
-            el usuario {report.user.username }.
+            Reporte del sitio <Link to={`/admins/search/sites/${site.id}`} className='underline'> {site.siteDomain}</Link>, por  
+            el usuario {user.username }.
           </CardDescription>
         </CardTitle>
 
@@ -127,7 +90,7 @@ export default function Report() {
               aspectRatio: '1/1' 
             }} 
           >
-            {report.severity}
+            {severity}
           </Badge>
 
           <span
@@ -148,15 +111,27 @@ export default function Report() {
 
         <CardTitle className='text-2xl'>URL</CardTitle>
         
-        <div className='pl-10'>{report.reportUrl}</div>
+        <div className='pl-10'>{reportUrl}</div>
 
         <CardTitle className='text-2xl'>Categorías</CardTitle>
 
         <div className='flex flex-wrap gap-2 pl-10'>
-          {
-            report.tags.map(({ tagName }) => {
-              return (<MetricBadge metricName={ tagName } />);
-            })
+          { tags.length ? (
+              tags.map(({ tag }) => {
+                return (<MetricBadge metricName={ tag.tagName } />);
+              })
+            ) : (
+              <div 
+                className='text-lg text-transparent' 
+                style={{
+                  background: '#e11d48',
+                  backgroundClip: 'text',
+                  filter: 'drop-shadow(0 0 5px #e11d48)', 
+                }}
+              > 
+                Sin categoría(s) que desplegar
+              </div>
+            )
           }
         </div>
 
@@ -164,7 +139,7 @@ export default function Report() {
 
         <CardTitle className='text-2xl'>Descripción</CardTitle>
 
-        <div>{report.reportDescription}</div>
+        <div>{reportDescription}</div>
 
         <Separator />
 
@@ -172,9 +147,22 @@ export default function Report() {
 
         <div className='flex flex-wrap gap-2 pl-10'>
           {
-            report.impacts.map(({ impactName }) => {
-              return (<MetricBadge metricName={ impactName } />);
-            })
+            impacts.length ? (
+              impacts.map(({ impact }) => {
+                return (<MetricBadge metricName={ impact.impactName } />);
+              })
+            ) : (
+              <div 
+                className='text-lg text-transparent' 
+                style={{
+                  background: '#e11d48',
+                  backgroundClip: 'text',
+                  filter: 'drop-shadow(0 0 5px #e11d48)', 
+                }}
+              > 
+                Sin impacto(s) que desplegar
+              </div>
+            )
           }
         </div>
 
@@ -186,7 +174,27 @@ export default function Report() {
         </div>
         
         <div className='flex flex-col gap-y-2'>
-          <img src={s3File} alt='evidence' className='mx-auto sm:w-[65%] lg:w-[50%] rounded-md' />
+          { evidences.length ? (
+              evidences.map(({ evidenceFileUrl }, idx) => (
+                <img 
+                  src={evidenceFileUrl} 
+                  alt={`evidence-${idx}`} 
+                  className='mx-auto sm:w-[65%] lg:w-[50%] rounded-md' 
+                />
+              ))
+            ) : (
+              <div 
+                className='p-10 text-lg text-center text-transparent' 
+                style={{
+                  background: '#e11d48',
+                  backgroundClip: 'text',
+                  filter: 'drop-shadow(0 0 5px #e11d48)', 
+                }}
+              > 
+                Sin evidencias por desplegar
+              </div>
+            )
+          }
         </div>
       </CardContent>
     </Card>

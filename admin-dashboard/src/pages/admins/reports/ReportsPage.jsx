@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import useFetch from '@/hooks/useFetch'
 import { Navigate } from 'react-router-dom'
 import PageCard from '@/components/PageCard'
 import PaginationComponent from '@/components/PaginationComponent'
@@ -6,40 +7,54 @@ import SearchBar from '@/components/SearchBar'
 import { ClipboardPen } from 'lucide-react'
 
 export default function ReportsPage() {
-  const [studentId, setStudentId] = useState('');
-  const [data, setData] = useState(null);
-  const [isPending, setIsPending] = useState(false);
-  const [error, setError] = useState(null);
+  if (!localStorage.getItem('accessToken'))
+    return (<Navigate to='/accounts/log-in' replace={true} />);
 
-  const handleChange = (e) => {setStudentId(e.target.value)};
+  // const [reportsData, setReportsData] = useState(null);
+
+  // const {
+  //   data,  
+  //   isPending: areReportsPending, 
+  //   error,  
+  // } = useFetch('http://localhost:3000/reports');
+
+  // if (!error)
+  //   setReportsData(data);
+
+  const [reportId, setReportId] = useState('');
+  const handleChange = (e) => {setReportId(e.target.value)};
+
+  const [reportData, setReportData] = useState(null);
+  const [isReportPending, setIsReportPending] = useState(false);
+  const [reportError, setReportError] = useState(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsPending(true);
 
-    fetch('http://localhost:3000/reports', {
+    fetch(`http://localhost:3000/reports/${reportId}`, {
       method: 'GET',
       headers: {'Authorization': localStorage.getItem('accessToken')}
     })
     .then(res => {
       if (!res.ok)
         throw Error('Could not fetch the data');
-      return res.json()
+      return res.json();
     })
     .then(data => {
-      setData(data);
-      setIsPending(false);
-      setError(null);
+      // setReportsData(null); 
+      setIsReportPending(false);
+      setReportError(null);
+
+      data.site = {};
+      setReportData(data);
     })
     .catch(error => {
-      setIsPending(false);
-      setError(error.message);
+      setIsReportPending(false);
+      setReportError(error.message);
       console.log(error);
     });
   }
-
-  // if (!localStorage.getItem('accessToken'))
-  //   return (<Navigate to='/accounts/log-in' replace={true} />);
 
   const createCardConfig = (severity) => {
     const cardConfig = {
@@ -49,7 +64,7 @@ export default function ReportsPage() {
         reportTitle: 'Fake Banking Login Page Stealing Credentials',
         severity: severity,
         createdAt: new Date().toLocaleString('es-MX'),
-        id: 5,  
+        id: 3,  
         buttonContent: 'Examinar', 
       } 
     };
@@ -71,8 +86,8 @@ export default function ReportsPage() {
 
       <SearchBar 
         placeholder='ID' 
-        handleSubmit={ handleSubmit } 
         handleChange={ handleChange } 
+        handleSubmit={ handleSubmit } 
       />
 
       {true &&
@@ -89,6 +104,21 @@ export default function ReportsPage() {
           <PageCard cardConfig={ cardConfig5 } />
         </div>
       }
+
+      {/* <div className='grid sm:grid-cols-1 md:grid-cols-2 gap-5'>
+        { (reportsData && !reportData) && 
+          reportsConfig.map((reportDataConfig) => (
+            <PageCard cardConfig = { reportDataConfig } />
+          ))
+        }          
+      </div>
+
+      <div className='grid sm:grid-cols-1 md:grid-cols-2 gap-5'>
+        { (!reportsData && reportData) && 
+          <PageCard cardConfig = { reportData } />
+        }          
+      </div> */}
+      
       <PaginationComponent />
     </div>
   ); 
