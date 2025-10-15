@@ -41,7 +41,7 @@ export default function PaginationComponent({
           <PaginationEllipsis />
         </PaginationItem>
 
-        {currentPage < totalNumberOfItems && (
+        {currentPage + 1 <= totalNumberOfPages && (
           <PaginationItem>
             <PaginationNext onClick = { () => { handleClick(currentPage + 1) } } />
           </PaginationItem>

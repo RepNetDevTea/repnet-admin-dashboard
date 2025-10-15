@@ -62,6 +62,7 @@ export default function SitesPage() {
     .then((data) => {
       setAreSitesPending(false);
       setSitesError(null);
+      setSiteData(null);
 
       const { sites, metaData } = data;
       setSitesData(sites);
