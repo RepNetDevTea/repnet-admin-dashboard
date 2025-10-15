@@ -8,33 +8,45 @@ import {
   PaginationPrevious 
 } from '@/components/ui/pagination'
 
-export default function PaginationComponent() {
+export default function PaginationComponent({ 
+  currentPage, 
+  totalNumberOfPages, 
+  totalNumberOfItems, 
+  handleClick, 
+}) {
   return(
     <Pagination>
       <PaginationContent>
-        <PaginationItem>
-          <PaginationPrevious />
-        </PaginationItem>
+        {currentPage > 1 && (
+          <PaginationItem>
+            <PaginationPrevious onClick={ () => { handleClick(currentPage - 1)} } />
+          </PaginationItem>
+        )}
 
-        <PaginationItem>
-          <PaginationLink>1</PaginationLink>
-        </PaginationItem>
-
-        <PaginationItem>
-          <PaginationLink>2</PaginationLink>
-        </PaginationItem>
-
-        <PaginationItem>
-          <PaginationLink>3</PaginationLink>
-        </PaginationItem>
+        {Array.from({ length: totalNumberOfPages }).map((_, idx) => {
+          const page = idx + 1;
+          return (
+            <PaginationItem key={page}>
+              <PaginationLink
+                onClick={ () => { handleClick(page) } }
+                isActive={page === currentPage}
+              >
+                {page}
+              </PaginationLink>
+            </PaginationItem>
+          );
+        })}
 
         <PaginationItem>
           <PaginationEllipsis />
         </PaginationItem>
 
-        <PaginationItem>
-          <PaginationNext />
-        </PaginationItem>
+        {currentPage < totalNumberOfItems && (
+          <PaginationItem>
+            <PaginationNext onClick = { () => { handleClick(currentPage + 1) } } />
+          </PaginationItem>
+        )}
+
       </PaginationContent>
     </Pagination>
   );

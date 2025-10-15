@@ -95,7 +95,7 @@ export default function LandingPageNavigationMenu() {
   const navigationMenuContentStyles = 'grid md:grid-cols-2 gap-3 p-4 w-[400px] md:w-[500px] lg:w-[600px]';
 
   return (
-    <NavigationMenu>
+    <NavigationMenu className='z-20'>
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuTrigger className={ menuTriggerStyles }>
