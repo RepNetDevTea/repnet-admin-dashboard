@@ -37,8 +37,8 @@ export default function SitesPage() {
   const [isSitePending, setIsSitePending] = useState(false);
   const [siteError, setSiteError] = useState(null);
 
-  // if (!localStorage.getItem('accessToken'))
-  //   return (<Navigate to="/accounts/log-in" replace={true} />);
+  if (!localStorage.getItem('accessToken'))
+    return (<Navigate to="/accounts/log-in" replace={true} />);
   if (isPending) return (<div>Pérame wey...</div>);
   if (areSitesPending) return (<div>Pérame wey...</div>);
 
@@ -135,19 +135,21 @@ export default function SitesPage() {
               }} 
             />
           ) : (
-            sitesData?.map((siteData) => (
-              <PageCard 
+            sitesData?.map((siteData) => {
+              const {createdAt, ...remainingSiteData } = siteData;
+
+              return (<PageCard 
                 cardConfig={{ 
                   report: {}, 
                   site: { 
-                    ...siteData, 
-                    createdAt: siteData.createdAt.toLocaleString('es-MX'), 
+                    ...remainingSiteData, 
+                    createdAt: new Date(createdAt).toLocaleString('es-MX'), 
                     icon, 
                     buttonContent, 
                   } 
                 }} 
-              />
-            ))
+              />);
+            })
           )
         }
       </div>
