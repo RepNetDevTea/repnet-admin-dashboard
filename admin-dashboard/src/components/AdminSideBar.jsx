@@ -35,7 +35,7 @@ import LogoutAlert from '@/components/LogoutAlert'
 const features = [
   { title: 'Reportes', url: 'reports', icon: ClipboardPen }, 
   { title: 'Sitios', url: 'sites', icon: Globe }, 
-  { title: 'Usuarios', url: 'users', icon: User }, 
+  // { title: 'Usuarios', url: 'users', icon: User }, 
 ];
 
 export default function AdminSidebar({ userData }) {
