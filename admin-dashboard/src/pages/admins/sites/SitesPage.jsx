@@ -136,7 +136,7 @@ export default function SitesPage() {
             />
           ) : (
             sitesData?.map((siteData) => {
-              const {createdAt, ...remainingSiteData } = siteData;
+              const { createdAt, ...remainingSiteData } = siteData;
 
               return (<PageCard 
                 cardConfig={{ 

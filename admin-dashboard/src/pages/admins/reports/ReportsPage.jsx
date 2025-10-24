@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import useFetch from '@/hooks/useFetch'
 import { Navigate } from 'react-router-dom'
 import PageCard from '@/components/PageCard'
@@ -24,7 +24,7 @@ export default function ReportsPage() {
   useEffect(() => {
     if (data) {
       console.log(data);
-      setReportsData(data.sites);
+      setReportsData(data.reports);
       setCurrentPage(data.metaData.currentPage);
       setTotalNumberOfPages(data.metaData.totalNumberOfPages);
       setTotalNumberOfReports(data.metaData.totalNumberOfReports);
@@ -60,8 +60,8 @@ export default function ReportsPage() {
       setReportsError(null);
       setReportData(null);
 
-      const { sites, metaData } = data;
-      setReportsData(sites);
+      const { reports, metaData } = data;
+      setReportsData(reports);
       setCurrentPage(metaData.currentPage);
       setTotalNumberOfPages(metaData.totalNumberOfPages);
       setTotalNumberOfReports(metaData.totalNumberOfReports);
@@ -132,7 +132,7 @@ export default function ReportsPage() {
             />
           ) : (
             reportsData?.map((reportData) => {
-              const {createdAt, ...remainingReportData } = reportData;
+              const { createdAt, ...remainingReportData } = reportData;
 
               return (<PageCard 
                 cardConfig={{ 
