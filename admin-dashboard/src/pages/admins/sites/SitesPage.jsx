@@ -39,12 +39,12 @@ export default function SitesPage() {
 
   if (!localStorage.getItem('accessToken'))
     return (<Navigate to="/accounts/log-in" replace={true} />);
-  if (isPending) return (<div>Pérame wey...</div>);
-  if (areSitesPending) return (<div>Pérame wey...</div>);
+  if (isPending) return (<div className='text-transparent'>...</div>);
+  if (areSitesPending) return (<div className='text-transparent'>Pérame wey...</div>);
 
-  console.log('currentPage: ', currentPage);
-  console.log('sitesData: ', sitesData);
-  console.log('siteData: ', siteData);
+  // console.log('currentPage: ', currentPage);
+  // console.log('sitesData: ', sitesData);
+  // console.log('siteData: ', siteData);
 
   const handleSiteFetching = (page) => {
     setCurrentPage(page);

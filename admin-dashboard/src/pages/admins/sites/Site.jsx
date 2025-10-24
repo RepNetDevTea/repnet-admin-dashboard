@@ -58,7 +58,7 @@ export default function Site() {
   const { siteId } = useParams();
   const { data, isPending, error } = useFetch(`http://localhost:3000/sites/${siteId}`);
 
-  if (isPending) return (<div>Pérame wey...</div>);
+  if (isPending) return (<div className='text-transparent'>...</div>);
 
   const { updatedAt, reports, ...remainingData } = data;
   const { id, siteDomain, siteReputation, createdAt } = remainingData;

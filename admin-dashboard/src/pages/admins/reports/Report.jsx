@@ -35,7 +35,7 @@ export default function Report() {
   const { reportId } = useParams();
   const { data, isPending, error } = useFetch(`http://localhost:3000/reports/${reportId}`);
 
-  if (isPending) return(<div>Pérame wey...{reportId}</div>);
+  if (isPending) return(<div className='text-transparent'>...{reportId}</div>);
 
   const { 
     id, 
