@@ -11,7 +11,7 @@ export default function SitesPage() {
     data, 
     isPending, 
     error, 
-  } = useFetch(`http://localhost:3000/sites/?page=1`)
+  } = useFetch(`http://localhost:3000/sites/?page=1`);
 
   const [sitesData, setSitesData] = useState(null);
   const [areSitesPending, setAreSitesPending] = useState(false);
@@ -40,7 +40,7 @@ export default function SitesPage() {
   if (!localStorage.getItem('accessToken'))
     return (<Navigate to="/accounts/log-in" replace={true} />);
   if (isPending) return (<div className='text-transparent'>...</div>);
-  if (areSitesPending) return (<div className='text-transparent'>Pérame wey...</div>);
+  if (areSitesPending) return (<div className='text-transparent'>...</div>);
 
   // console.log('currentPage: ', currentPage);
   // console.log('sitesData: ', sitesData);
